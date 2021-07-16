@@ -20,6 +20,7 @@ using Vuforia;
 public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandler
 {
     Text _txtNama, _txtDesc;
+    Button _btnPlay;
     string[] _nama, _desc;
 
     #region PROTECTED_MEMBER_VARIABLES
@@ -37,12 +38,13 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
         mTrackableBehaviour = GetComponent<TrackableBehaviour>();
         if (mTrackableBehaviour)
             mTrackableBehaviour.RegisterTrackableEventHandler(this);
-
+        
+        _btnPlay = GameObject.Find("btnPlay").GetComponent<Button>();
         _txtNama = GameObject.Find("edtNamaRambu").GetComponent<Text>();
         _txtDesc = GameObject.Find("memoKet").GetComponent<Text>();
 
-        _nama = PlayerPrefsX.GetStringArray("inijudul");
-        _desc = PlayerPrefsX.GetStringArray("inideskripsi");
+        _nama = PlayerPrefsX.GetStringArray("NamaRambu");
+        _desc = PlayerPrefsX.GetStringArray("DeskRambu");
     }
 
     protected virtual void OnDestroy()
@@ -75,21 +77,26 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
             newStatus == TrackableBehaviour.Status.EXTENDED_TRACKED)
         {
             OnTrackingFound();
-            
+
             if(mTrackableBehaviour.TrackableName == "noUTurn"){
-                _txtNama.text = _nama[1];
-                _txtDesc.text = _desc[1];
-            }else if(mTrackableBehaviour.TrackableName == "verboden2"){
                 _txtNama.text = _nama[0];
                 _txtDesc.text = _desc[0];
+                PlayerPrefs.SetInt("nomorquiz",0);
+            }else if(mTrackableBehaviour.TrackableName == "verboden2"){
+                _txtNama.text = _nama[1];
+                _txtDesc.text = _desc[1];
+                PlayerPrefs.SetInt("nomorquiz",1);
             }
+            _btnPlay.interactable = true;
         }
         else if (previousStatus == TrackableBehaviour.Status.TRACKED &&
                  newStatus == TrackableBehaviour.Status.NO_POSE)
         {
             OnTrackingLost();
+
             _txtNama.text = "Nama Rambu";
             _txtDesc.text = "Keterangan Rambu Lalin";
+            _btnPlay.interactable = false;
         }
         else
         {

@@ -30,4 +30,8 @@ public class UIHandlerScript : MonoBehaviour
     public void backtoMain(){
         SceneManager.LoadScene("MainMenu");
     }
+
+    public void startQuiz(){
+        SceneManager.LoadScene("MiniQuiz");
+    }
 }
